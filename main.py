@@ -1,3 +1,2 @@
-from Business import PessoaBusiness
+import Controlador
 
-print(PessoaBusiness().getAll())
