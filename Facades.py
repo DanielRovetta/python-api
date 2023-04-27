@@ -6,9 +6,8 @@ class PessoaFacades:
     def __init__(self):
         self.pessoa_bussines = PessoaBusiness()
 
-    def getAll(self):
-        self.__init__()
-        lista = self.pessoa_bussines.getAll()
+    @staticmethod
+    def __obterListaObjetoDTO(lista: list):
         lista_dto = []
 
         for item in lista:
@@ -17,3 +16,16 @@ class PessoaFacades:
             lista_dto.append(objeto_dto)
 
         return lista_dto
+
+    def getAll(self):
+        self.__init__()
+        return self.__obterListaObjetoDTO(self.pessoa_bussines.getAll())
+
+    def getById(self, id: int):
+        self.__init__()
+        return self.__obterListaObjetoDTO(self.pessoa_bussines.getById(id))
+
+    def insert(self, nova_pessoa: dict):
+        self.__init__()
+        id = self.pessoa_bussines.insert(nova_pessoa)
+        return self.__obterListaObjetoDTO(self.pessoa_bussines.getById(id))

@@ -1,27 +1,55 @@
 from flask import Flask, jsonify, request
 from Facades import PessoaFacades
+from BusinessException import DadosNaoEncotrados
 
 
 app = Flask(__name__)
 
 
-# Consultar(todos)
-@app.route('/livros', methods=['GET'])
-def obter_livros():
-    lista = PessoaFacades().getAll()
+def __obterJson(lista: list):
     lista_dicionario = []
     for item in lista:
         lista_dicionario.append(item.__dict__)
     return jsonify(lista_dicionario)
 
 
-# Consultar(id)
-@app.route('/livros/<int:id>', methods=['GET'])
-def obter_livro_por_id(id):
-    lista = PessoaFacades().getAll()
-    for item in lista:
-        if item.id == id:
-            return jsonify(item.__dict__)
+@app.route('/pessoas', methods=['GET'])
+def obter_pessoa():
+    try:
+        id = request.args.get('id', default=None, type=int)
+
+        if id is None:
+            lista = PessoaFacades().getAll()
+            return __obterJson(lista)
+
+        lista = PessoaFacades().getById(id)
+        return __obterJson(lista)
+
+    except DadosNaoEncotrados as error:
+        print(error)
+        return jsonify(str(error))
+
+    except Exception as error:
+        print(error)
+        return jsonify("Erro ao executar")
+
+
+# Criar
+@app.route('/pessoas', methods=['POST'])
+def incluir_nova_pessoa():
+    requisicao = request.get_json()
+
+    if type(requisicao) == list:
+        lista = []
+        for item in requisicao:
+            nova_pessoa = PessoaFacades().insert(item)
+            lista.append(nova_pessoa[0])
+        return __obterJson(lista)
+
+    if type(requisicao) == dict:
+        lista = PessoaFacades().insert(requisicao)
+        return __obterJson(lista)
+
 
 
 # # Editar
@@ -50,4 +78,3 @@ def obter_livro_por_id(id):
 #
 #     return jsonify(livros)
 app.run(port=5000, host='localhost', debug=True)
-
