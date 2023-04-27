@@ -16,12 +16,12 @@ def __obterJson(lista: list):
 @app.route('/pessoas', methods=['GET'])
 def obter_pessoa():
     try:
-        id = request.args.get('id', default=None, type=int)
-
+        id = request.args.get('id', default=None)
         if id is None:
             lista = PessoaFacades().getAll()
             return __obterJson(lista)
 
+        id = int(id)
         lista = PessoaFacades().getById(id)
         return __obterJson(lista)
 
@@ -29,27 +29,38 @@ def obter_pessoa():
         print(error)
         return jsonify(str(error))
 
+    except (TypeError, ValueError) as error:
+        print(error)
+        return jsonify("Id informado Inválido: " + str(error))
+
     except Exception as error:
         print(error)
-        return jsonify("Erro ao executar")
+        return jsonify("Erro ao executar: " + str(type(error)) + ' ' + str(error))
 
 
-# Criar
 @app.route('/pessoas', methods=['POST'])
 def incluir_nova_pessoa():
-    requisicao = request.get_json()
+    try:
+        requisicao = request.get_json()
 
-    if type(requisicao) == list:
-        lista = []
-        for item in requisicao:
-            nova_pessoa = PessoaFacades().insert(item)
-            lista.append(nova_pessoa[0])
-        return __obterJson(lista)
+        if type(requisicao) == list:
+            lista = []
+            for item in requisicao:
+                nova_pessoa = PessoaFacades().insert(item)
+                lista.append(nova_pessoa[0])
+            return __obterJson(lista)
 
-    if type(requisicao) == dict:
-        lista = PessoaFacades().insert(requisicao)
-        return __obterJson(lista)
+        if type(requisicao) == dict:
+            lista = PessoaFacades().insert(requisicao)
+            return __obterJson(lista)
 
+    except DadosNaoEncotrados as error:
+        print(error)
+        return jsonify(str(error))
+
+    except Exception as error:
+        print(error)
+        return jsonify("Erro ao executar: " + str(error))
 
 
 # # Editar
@@ -61,13 +72,6 @@ def incluir_nova_pessoa():
 #             livros[indice].update(livro_alterado)
 #             return jsonify(livros[indice])
 #
-# # Criar
-# @app.route('/livros', methods=['POST'])
-# def incluir_novo_livro():
-#     novo_livro = request.get_json()
-#     livros.append(novo_livro)
-#
-#     return jsonify(livros)
 #
 # # Excluir
 # @app.route('/livros/<int:id>', methods=['DELETE'])
@@ -77,4 +81,5 @@ def incluir_nova_pessoa():
 #             del livros[indice]
 #
 #     return jsonify(livros)
+
 app.run(port=5000, host='localhost', debug=True)

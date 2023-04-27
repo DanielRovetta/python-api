@@ -17,9 +17,8 @@ class PessoaBusiness:
         return lista
 
     @staticmethod
-    def __validarPessoa(nova_pessoa: dict):
-        pessoa = Pessoa(nova_pessoa['id'], nova_pessoa['nome'], nova_pessoa['data_nascimento'], nova_pessoa['cpf'],
-                        nova_pessoa['sexo'], nova_pessoa['altura'], nova_pessoa['peso'])
+    def __validarPessoa(pessoa: Pessoa):
+
 
         if pessoa.nm_pessoa is None or len(pessoa.nm_pessoa) == 0 or type(pessoa.nm_pessoa) != str:
             raise DadosNaoEncotrados("Nome inválido")
@@ -39,7 +38,7 @@ class PessoaBusiness:
         if pessoa.dt_nascimento is None or len(pessoa.dt_nascimento) == 0 or type(pessoa.dt_nascimento) != str:
             raise DadosNaoEncotrados("Data de Nacimento inválida")
 
-        return pessoa
+        return True
 
     def getAll(self):
         lista = self.pessoa_dao.getAll()
@@ -60,8 +59,14 @@ class PessoaBusiness:
         return self.__obterListaObjetoEntidade(lista)
 
     def insert(self, nova_pessoa: dict):
+        try:
+            pessoa = Pessoa(0, nova_pessoa['nome'], nova_pessoa['data_nascimento'], nova_pessoa['cpf'],
+                            nova_pessoa['sexo'], nova_pessoa['altura'], nova_pessoa['peso'])
 
-        pessoa = self.__validarPessoa(nova_pessoa)
+        except Exception as error:
+            raise DadosNaoEncotrados("Atributos não estao completos: " + str(error))
+
+        self.__validarPessoa(pessoa)
 
         if pessoa is None:
             raise DadosNaoEncotrados("Dados informados são invalidos")
