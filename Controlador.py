@@ -63,23 +63,59 @@ def incluir_nova_pessoa():
         return jsonify("Erro ao executar: " + str(error))
 
 
-# # Editar
-# @app.route('/livros/<int:id>', methods=['PUT'])
-# def editar_livro_por_id(id):
-#     livro_alterado = request.get_json()
-#     for indice, livro in enumerate(livros):
-#         if livro.get('id') == id:
-#             livros[indice].update(livro_alterado)
-#             return jsonify(livros[indice])
-#
-#
-# # Excluir
-# @app.route('/livros/<int:id>', methods=['DELETE'])
-# def excluir_livro(id):
-#     for indice, livro in enumerate(livros):
-#         if livro.get('id') == id:
-#             del livros[indice]
-#
-#     return jsonify(livros)
+@app.route('/pessoas', methods=['PUT'])
+def editar_pessoa_por_id():
+    try:
+        requisicao = request.get_json()
+
+        if type(requisicao) == list:
+            lista = []
+            for item in requisicao:
+                nova_pessoa = PessoaFacades().uptade(item)
+                lista.append(nova_pessoa[0])
+            return __obterJson(lista)
+
+        if type(requisicao) == dict:
+            lista = PessoaFacades().uptade(requisicao)
+            return __obterJson(lista)
+
+    except DadosNaoEncotrados as error:
+        print(error)
+        return jsonify(str(error))
+
+    except Exception as error:
+        print(error)
+        return jsonify("Erro ao executar: " + str(error))
+
+
+# Excluir
+@app.route('/pessoas', methods=['DELETE'])
+def excluir_pessoa():
+    try:
+        requisicao = request.get_json()
+
+        if type(requisicao) == list:
+            lista = []
+            for item in requisicao:
+                nova_pessoa = PessoaFacades().delete(item)
+                lista.append(str(nova_pessoa))
+            return jsonify(lista)
+
+        if type(requisicao) == dict:
+            lista = PessoaFacades().delete(requisicao)
+            return jsonify(lista)
+
+    except DadosNaoEncotrados as error:
+        print(error)
+        return jsonify(str(error))
+
+    except (TypeError, ValueError) as error:
+        print(error)
+        return jsonify("Id informado Inválido: " + str(error))
+
+    except Exception as error:
+        print(error)
+        return jsonify("Erro ao executar: " + str(type(error)) + ' ' + str(error))
+
 
 app.run(port=5000, host='localhost', debug=True)

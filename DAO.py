@@ -22,3 +22,14 @@ class PessoaDAO:
 
         return self.con.consultaQuery("select MAX(id_pessoa) from clinica.pessoa;")
 
+    def update(self, valores: tuple):
+        self.con.__int__()
+        self.con.executaQuery("update clinica.pessoa set nm_pessoa = %s, dt_nascimento = %s , cd_cpf = %s, "
+                              "tx_sexo = %s, nr_altura = %s, nr_peso = %s where id_pessoa = %s;", valores)
+
+        return valores[-1]
+
+    def delete(self, id: int):
+        self.con.__int__()
+        self.con.executaQuery("delete from clinica.pessoa where id_pessoa = " + str(id) + ";", id)
+        return True

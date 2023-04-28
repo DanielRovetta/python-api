@@ -29,3 +29,12 @@ class PessoaFacades:
         self.__init__()
         id = self.pessoa_bussines.insert(nova_pessoa)
         return self.__obterListaObjetoDTO(self.pessoa_bussines.getById(id))
+
+    def uptade(self, pessoa: dict):
+        self.__init__()
+        id = self.pessoa_bussines.uptade(pessoa)
+        return self.__obterListaObjetoDTO(self.pessoa_bussines.getById(id))
+
+    def delete(self, pessoa: dict):
+        self.__init__()
+        return self.pessoa_bussines.delete(pessoa)

@@ -21,7 +21,10 @@ class ConexaoPostgres:
         cur = con.cursor()
 
         try:
-            cur.execute(query, valores)
+            if type(valores) == tuple:
+                cur.execute(query, valores)
+            else:
+                cur.execute(query)
             con.commit()
 
         except (Exception, psycopg2.DatabaseError) as error:
