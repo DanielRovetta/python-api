@@ -33,3 +33,37 @@ class PessoaDAO:
         self.con.__int__()
         self.con.executaQuery("delete from clinica.pessoa where id_pessoa = " + str(id) + ";", id)
         return True
+
+
+class ClienteDAO:
+    def __init__(self):
+        self.con = ConexaoPostgres()
+
+    def getAll(self):
+        self.con.__int__()
+        return self.con.consultaQuery("select id_cliente, dt_datacriacao, dt_dataexclusao, id_pessoa "
+                                      "from clinica.cliente;")
+
+    def getById(self, id: int):
+        self.con.__int__()
+        return self.con.consultaQuery("select id_cliente, dt_datacriacao, dt_dataexclusao, id_pessoa "
+                                      "from clinica.cliente where id_cliente = " + str(id) + ";")
+
+    def insert(self, valores: tuple):
+        self.con.__int__()
+        self.con.executaQuery("insert into clinica.cliente (dt_datacriacao, dt_dataexclusao, id_pessoa) "
+                              "values (%s, %s, %s)", valores)
+
+        return self.con.consultaQuery("select MAX(id_pessoa) from clinica.cliente;")
+
+    def update(self, valores: tuple):
+        self.con.__int__()
+        self.con.executaQuery("update clinica.cliente set dt_datacriacao = %s, dt_dataexclusao = %s , id_pessoa = %s "
+                              "where id_cliente = %s;", valores)
+
+        return valores[-1]
+
+    def delete(self, id: int):
+        self.con.__int__()
+        self.con.executaQuery("delete from clinica.cliente where id_cliente = " + str(id) + ";", id)
+        return True

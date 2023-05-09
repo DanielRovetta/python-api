@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from Facades import PessoaFacades
+from Facades import PessoaFacades, ClienteFacades
 from BusinessException import DadosNaoEncotrados
 
 
@@ -9,6 +9,14 @@ app = Flask(__name__)
 def __obterJson(lista: list):
     lista_dicionario = []
     for item in lista:
+        lista_dicionario.append(item.__dict__)
+    return jsonify(lista_dicionario)
+
+
+def __obterJsonCliente(lista: list):
+    lista_dicionario = []
+    for item in lista:
+        item.pessoa = item.pessoa.__dict__
         lista_dicionario.append(item.__dict__)
     return jsonify(lista_dicionario)
 
@@ -24,6 +32,31 @@ def obter_pessoa():
         id = int(id)
         lista = PessoaFacades().getById(id)
         return __obterJson(lista)
+
+    except DadosNaoEncotrados as error:
+        print(error)
+        return jsonify(str(error))
+
+    except (TypeError, ValueError) as error:
+        print(error)
+        return jsonify("Id informado Inválido: " + str(error))
+
+    except Exception as error:
+        print(error)
+        return jsonify("Erro ao executar: " + str(type(error)) + ' ' + str(error))
+
+
+@app.route('/cliente', methods=['GET'])
+def obter_cliente():
+    try:
+        id = request.args.get('id', default=None)
+        if id is None:
+            lista = ClienteFacades().getAll()
+            return __obterJsonCliente(lista)
+
+        id = int(id)
+        lista = ClienteFacades().getById(id)
+        return __obterJsonCliente(lista)
 
     except DadosNaoEncotrados as error:
         print(error)

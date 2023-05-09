@@ -1,7 +1,6 @@
-from DAO import PessoaDAO
-from Entidades import Pessoa
-from BusinessException import DadosNaoEncotrados
-from BusinessException import DadosNaoInseridos
+from DAO import PessoaDAO, ClienteDAO
+from Entidades import Pessoa, Cliente
+from BusinessException import DadosNaoEncotrados, DadosNaoInseridos
 
 
 class PessoaBusiness:
@@ -123,6 +122,116 @@ class PessoaBusiness:
             raise DadosNaoEncotrados("Id informado invalido")
 
         resposta = self.pessoa_dao.delete(id)
+
+        if resposta is None:
+            raise DadosNaoEncotrados("Dados não foram excluidos com sucesso")
+
+        return resposta
+
+
+class ClienteBusiness:
+    def __init__(self):
+        self.cliente_dao = ClienteDAO()
+
+    @staticmethod
+    def __obterListaObjetoEntidade(dados: list):
+        lista = []
+        for item in dados:
+            objeto = Cliente(item[0], item[1], item[2], item[3])
+            lista.append(objeto)
+        return lista
+
+    @staticmethod
+    def __validarCliente(cliente: Cliente):
+        if cliente.id_cliente is None or type(cliente.id_cliente) != int:
+            raise DadosNaoEncotrados("Id inválido")
+
+        if cliente.dt_datacriacao is None or len(cliente.dt_datacriacao) == 0 or type(cliente.dt_datacriacao) != str:
+            raise DadosNaoEncotrados("Data de Criação inválida")
+
+        if cliente.id_pessoa is None or type(cliente.id_pessoa) != int:
+            raise DadosNaoEncotrados("Id da  Pessoa inválido")
+
+        return True
+
+    def getAll(self):
+        lista = self.cliente_dao.getAll()
+        if len(lista) == 0:
+            raise DadosNaoEncotrados("Não foram encotrados dados")
+
+        return self.__obterListaObjetoEntidade(lista)
+
+    def getById(self, id: int):
+        if id is None or id <= 0 or type(id) != int:
+            raise DadosNaoEncotrados("Id informado invalido")
+
+        lista = self.cliente_dao.getById(id)
+
+        if len(lista) == 0:
+            raise DadosNaoEncotrados("Não foram encotrados dados")
+
+        return self.__obterListaObjetoEntidade(lista)
+
+    def insert(self, novo_cliente: dict):
+        try:
+            cliente = Cliente(0, novo_cliente['data_criacao'], novo_cliente['data_exclusao'],
+                              novo_cliente['id_pessoa'])
+
+        except Exception as error:
+            raise DadosNaoEncotrados("Atributos não estao completos: " + str(error))
+
+        self.__validarCliente(cliente)
+
+        if cliente is None:
+            raise DadosNaoEncotrados("Dados informados são invalidos")
+
+        valores = (cliente.dt_datacriacao, cliente.dt_dataexclusao, cliente.id_pessoa)
+
+        id = self.cliente_dao.insert(valores)
+
+        if id[0][0] == 0 or id is None or id[0][0] is None:
+            raise DadosNaoInseridos("Dados não foram iseridos com sucesso")
+
+        return id[0][0]
+
+    def uptade(self, novo_cliente: dict):
+        try:
+            cliente = Cliente(novo_cliente['id'], novo_cliente['data_criacao'], novo_cliente['data_exclusao'],
+                              novo_cliente['id_pessoa'])
+
+        except Exception as error:
+            raise DadosNaoEncotrados("Atributos não estao completos: " + str(error))
+
+        self.__validarCliente(cliente)
+
+        if cliente is None:
+            raise DadosNaoEncotrados("Dados informados são invalidos")
+
+        valores = (cliente.dt_datacriacao, cliente.dt_dataexclusao, cliente.id_pessoa, cliente.id_cliente)
+
+        id = self.cliente_dao.update(valores)
+
+        if id == 0 or id is None:
+            raise DadosNaoInseridos("Dados não foram iseridos com sucesso")
+
+        return id
+
+    def delete(self,  novo_cliente: dict):
+        try:
+            cliente = Cliente(novo_cliente['id'], novo_cliente['data_criacao'], novo_cliente['data_exclusao'],
+                              novo_cliente['id_pessoa'])
+
+        except Exception as error:
+            raise DadosNaoEncotrados("Atributos não estao completos: " + str(error))
+
+        self.__validarCliente(cliente)
+
+        id = cliente.id_cliente
+
+        if id is None or id <= 0 or type(id) != int:
+            raise DadosNaoEncotrados("Id informado invalido")
+
+        resposta = self.cliente_dao.delete(id)
 
         if resposta is None:
             raise DadosNaoEncotrados("Dados não foram excluidos com sucesso")

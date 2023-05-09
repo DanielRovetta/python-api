@@ -18,3 +18,15 @@ class Pessoa:
         self.nr_altura = nr_altura
         self.nr_peso = nr_peso
 
+
+class Cliente:
+    id_cliente: int
+    dt_datacriacao: str
+    dt_dataexclusao: str
+    id_pessoa: int
+
+    def __init__(self, id_cliente: int, dt_datacriacao: str, dt_dataexclusao: str, id_pessoa: int):
+        self.id_cliente = id_cliente
+        self.dt_datacriacao = dt_datacriacao
+        self.dt_dataexclusao = dt_dataexclusao
+        self.id_pessoa = id_pessoa
