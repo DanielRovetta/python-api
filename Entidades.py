@@ -21,12 +21,12 @@ class Pessoa:
 
 class Cliente:
     id_cliente: int
-    dt_datacriacao: str
-    dt_dataexclusao: str
+    dt_criacao: str
+    dt_exclusao: str
     id_pessoa: int
 
-    def __init__(self, id_cliente: int, dt_datacriacao: str, dt_dataexclusao: str, id_pessoa: int):
+    def __init__(self, id_cliente: int, dt_criacao: str, dt_exclusao: str, id_pessoa: int):
         self.id_cliente = id_cliente
-        self.dt_datacriacao = dt_datacriacao
-        self.dt_dataexclusao = dt_dataexclusao
+        self.dt_criacao = dt_criacao
+        self.dt_exclusao = dt_exclusao
         self.id_pessoa = id_pessoa

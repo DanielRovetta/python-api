@@ -49,7 +49,7 @@ class ClienteFacades:
         lista_dto = []
 
         for item in lista:
-            objeto_dto = ClienteDTO(item.id_cliente, item.dt_datacriacao, item.dt_dataexclusao,
+            objeto_dto = ClienteDTO(item.id_cliente, item.dt_criacao, item.dt_exclusao,
                                     self.pessoa_facade.getById(item.id_pessoa)[0])
             lista_dto.append(objeto_dto)
 

@@ -41,24 +41,24 @@ class ClienteDAO:
 
     def getAll(self):
         self.con.__int__()
-        return self.con.consultaQuery("select id_cliente, dt_datacriacao, dt_dataexclusao, id_pessoa "
+        return self.con.consultaQuery("select id_cliente, dt_criacao, dt_exclusao, id_pessoa "
                                       "from clinica.cliente;")
 
     def getById(self, id: int):
         self.con.__int__()
-        return self.con.consultaQuery("select id_cliente, dt_datacriacao, dt_dataexclusao, id_pessoa "
+        return self.con.consultaQuery("select id_cliente, dt_criacao, dt_exclusao, id_pessoa "
                                       "from clinica.cliente where id_cliente = " + str(id) + ";")
 
     def insert(self, valores: tuple):
         self.con.__int__()
-        self.con.executaQuery("insert into clinica.cliente (dt_datacriacao, dt_dataexclusao, id_pessoa) "
+        self.con.executaQuery("insert into clinica.cliente (dt_criacao, dt_exclusao, id_pessoa) "
                               "values (%s, %s, %s)", valores)
 
         return self.con.consultaQuery("select MAX(id_pessoa) from clinica.cliente;")
 
     def update(self, valores: tuple):
         self.con.__int__()
-        self.con.executaQuery("update clinica.cliente set dt_datacriacao = %s, dt_dataexclusao = %s , id_pessoa = %s "
+        self.con.executaQuery("update clinica.cliente set dt_criacao = %s, dt_exclusao = %s , id_pessoa = %s "
                               "where id_cliente = %s;", valores)
 
         return valores[-1]

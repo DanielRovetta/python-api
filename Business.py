@@ -146,7 +146,7 @@ class ClienteBusiness:
         if cliente.id_cliente is None or type(cliente.id_cliente) != int:
             raise DadosNaoEncotrados("Id inválido")
 
-        if cliente.dt_datacriacao is None or len(cliente.dt_datacriacao) == 0 or type(cliente.dt_datacriacao) != str:
+        if cliente.dt_criacao is None or len(cliente.dt_criacao) == 0 or type(cliente.dt_criacao) != str:
             raise DadosNaoEncotrados("Data de Criação inválida")
 
         if cliente.id_pessoa is None or type(cliente.id_pessoa) != int:
@@ -185,7 +185,7 @@ class ClienteBusiness:
         if cliente is None:
             raise DadosNaoEncotrados("Dados informados são invalidos")
 
-        valores = (cliente.dt_datacriacao, cliente.dt_dataexclusao, cliente.id_pessoa)
+        valores = (cliente.dt_criacao, cliente.dt_exclusao, cliente.id_pessoa)
 
         id = self.cliente_dao.insert(valores)
 
@@ -207,7 +207,7 @@ class ClienteBusiness:
         if cliente is None:
             raise DadosNaoEncotrados("Dados informados são invalidos")
 
-        valores = (cliente.dt_datacriacao, cliente.dt_dataexclusao, cliente.id_pessoa, cliente.id_cliente)
+        valores = (cliente.dt_criacao, cliente.dt_exclusao, cliente.id_pessoa, cliente.id_cliente)
 
         id = self.cliente_dao.update(valores)
 

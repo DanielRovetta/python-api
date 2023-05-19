@@ -21,7 +21,7 @@ def __obterJsonCliente(lista: list):
     return jsonify(lista_dicionario)
 
 
-@app.route('/pessoas', methods=['GET'])
+@app.route('/pessoa', methods=['GET'])
 def obter_pessoa():
     try:
         id = request.args.get('id', default=None)
@@ -71,7 +71,7 @@ def obter_cliente():
         return jsonify("Erro ao executar: " + str(type(error)) + ' ' + str(error))
 
 
-@app.route('/pessoas', methods=['POST'])
+@app.route('/pessoa', methods=['POST'])
 def incluir_nova_pessoa():
     try:
         requisicao = request.get_json()
@@ -96,7 +96,7 @@ def incluir_nova_pessoa():
         return jsonify("Erro ao executar: " + str(error))
 
 
-@app.route('/pessoas', methods=['PUT'])
+@app.route('/pessoa', methods=['PUT'])
 def editar_pessoa_por_id():
     try:
         requisicao = request.get_json()
@@ -122,7 +122,7 @@ def editar_pessoa_por_id():
 
 
 # Excluir
-@app.route('/pessoas', methods=['DELETE'])
+@app.route('/pessoa', methods=['DELETE'])
 def excluir_pessoa():
     try:
         requisicao = request.get_json()
